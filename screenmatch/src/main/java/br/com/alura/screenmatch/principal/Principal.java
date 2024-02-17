@@ -98,18 +98,28 @@ public class Principal {
 //                ));
 
         //================ primeira ocorrencia de uma busca
-        System.out.println("Digite o nome do episodio: ");
-        var trechoTitulo = leitura.nextLine();
+//        System.out.println("Digite o nome do episodio: ");
+//        var trechoTitulo = leitura.nextLine();
+//
+//        Optional<Episodio> episodioBuscado = episodios.stream()
+//                .filter(e -> e.getTitulo().toUpperCase().contains(trechoTitulo.toUpperCase()))
+//                .findFirst();
+//
+//        if (episodioBuscado.isPresent()){
+//            System.out.println("Episodio encontrado na temporada: " + episodioBuscado.get().getTemporada());
+//        } else {
+//        System.out.println("Episodio não encontrado!");
+//        }
 
-        Optional<Episodio> episodioBuscado = episodios.stream()
-                .filter(e -> e.getTitulo().toUpperCase().contains(trechoTitulo.toUpperCase()))
-                .findFirst();
+        //================== mapa com dados de avaliacao por temporada
 
-        if (episodioBuscado.isPresent()){
-            System.out.println("Episodio encontrado na temporada: " + episodioBuscado.get().getTemporada());
-        } else {
-        System.out.println("Episodio não encontrado!");
-        }
+        //agrupamento de dados
+        Map<Integer, Double> avaliacoesPorTemporada = episodios.stream()
+                .filter(e -> e.getAvaliacao() > 0.0)
+                .collect(Collectors.groupingBy(Episodio::getTemporada,
+                        Collectors.averagingDouble((Episodio::getAvaliacao))));
+
+        System.out.println(avaliacoesPorTemporada);
 
     }
 }
