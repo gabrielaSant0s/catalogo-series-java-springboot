@@ -76,6 +76,7 @@ public class Principal {
                         .map(d -> new Episodio(t.numero(), d))
                 ).collect(Collectors.toList());
 
+
         episodios.forEach(System.out::println);
 //
 //        //filtro a de datas
