@@ -118,8 +118,14 @@ public class Principal {
                 .filter(e -> e.getAvaliacao() > 0.0)
                 .collect(Collectors.groupingBy(Episodio::getTemporada,
                         Collectors.averagingDouble((Episodio::getAvaliacao))));
-
         System.out.println(avaliacoesPorTemporada);
+
+        // =============== coletando estatisticas
+
+        DoubleSummaryStatistics est = episodios.stream()
+                .filter(e -> e.getAvaliacao() > 0.0)
+                .collect(Collectors.summarizingDouble(Episodio::getAvaliacao));
+        System.out.println(est);
 
     }
 }
