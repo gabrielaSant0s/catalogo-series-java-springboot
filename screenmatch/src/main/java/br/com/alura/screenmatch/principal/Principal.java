@@ -9,10 +9,7 @@ import br.com.alura.screenmatch.service.ConverteDados;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Principal {
@@ -24,14 +21,17 @@ public class Principal {
 
 
     public void exibeMenu(){
+
+        // ========= pega dados da serie =============
         System.out.println("Digite o nome da Serie: ");
         var nomeSerie = leitura.nextLine();
 
         var json = consumo.obterDados(ENDERECO + nomeSerie.replace(" ", "+") + API_KEY);
 
         DadosSerie dados = conversor.obterDados(json, DadosSerie.class);
-        System.out.println(dados);
+        //System.out.println(dados);
 
+        // ============== lista temporadas ==================
         List<DadosTemporada> temporadas = new ArrayList<>();
 
 		for (int i = 1; i < dados.totalTemporadas(); i++) {
@@ -40,7 +40,7 @@ public class Principal {
 			temporadas.add(dadosTemporada);
 		}
         //tembem é um lambda
-		temporadas.forEach(System.out::println);
+		//temporadas.forEach(System.out::println);
 
 //        for (int i = 0; i < dados.totalTemporadas()-1; i++) {
 //            List<DadosEpisodio> episodiosPorTemporada = temporadas.get(i).episodios();
@@ -53,23 +53,24 @@ public class Principal {
         //lambdas
         temporadas.forEach(t -> t.episodios().forEach(e -> System.out.println(e.titulo())));
 
+        // ============== separa dados do episodio ==================
         //juntando temporadas com episodios por temporada
         List<DadosEpisodio> dadosEpisodios = temporadas.stream()
                 .flatMap(t -> t.episodios().stream())
                 .collect(Collectors.toList());
 
-        System.out.println("\n Top 10 episodios: ");
-        //listar os 10 melhores episodios
-        dadosEpisodios.stream()
-                .filter(e -> !e.avaliacao().equalsIgnoreCase("N/A"))
-                .peek(e -> System.out.println("Primeiro filtro(N/A): " + e))
-                .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed())
-                .peek(e -> System.out.println("Ordenação: " + e))
-                .limit(10)
-                .peek(e -> System.out.println("Limite: " + e))
-                .map(e -> e.titulo().toUpperCase())
-                .peek(e -> System.out.println("Mapeamento: " + e))
-                .forEach(System.out::println);
+//        System.out.println("\n Top 10 episodios: ");
+//        //listar os 10 melhores episodios
+//        dadosEpisodios.stream()
+//                .filter(e -> !e.avaliacao().equalsIgnoreCase("N/A"))
+//                .peek(e -> System.out.println("Primeiro filtro(N/A): " + e))
+//                .sorted(Comparator.comparing(DadosEpisodio::avaliacao).reversed())
+//                .peek(e -> System.out.println("Ordenação: " + e))
+//                .limit(10)
+//                .peek(e -> System.out.println("Limite: " + e))
+//                .map(e -> e.titulo().toUpperCase())
+//                .peek(e -> System.out.println("Mapeamento: " + e))
+//                .forEach(System.out::println);
 
         List<Episodio> episodios =  temporadas.stream()
                 .flatMap(t -> t.episodios().stream()
@@ -96,6 +97,19 @@ public class Principal {
 //                                " Data de lançamento: " + e.getDataDeLancamento().format(formatador)
 //                ));
 
+        //================ primeira ocorrencia de uma busca
+        System.out.println("Digite o nome do episodio: ");
+        var trechoTitulo = leitura.nextLine();
+
+        Optional<Episodio> episodioBuscado = episodios.stream()
+                .filter(e -> e.getTitulo().toUpperCase().contains(trechoTitulo.toUpperCase()))
+                .findFirst();
+
+        if (episodioBuscado.isPresent()){
+            System.out.println("Episodio encontrado na temporada: " + episodioBuscado.get().getTemporada());
+        } else {
+        System.out.println("Episodio não encontrado!");
+        }
 
     }
 }
