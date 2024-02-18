@@ -1,6 +1,6 @@
 package br.com.alura.screenmatch.model;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
+import br.com.alura.screenmatch.service.ConsultaChatGPT;
 
 import java.util.OptionalDouble;
 
@@ -20,6 +20,8 @@ public class Serie {
         this.genero = Categoria.fromString(dadosSerie.genero().split(",")[0].trim());
         this.atores = dadosSerie.atores();
         this.poster = dadosSerie.poster();
+        // se fosse usar o chat gpt mas eu nao tenho cota pra usar kkkkk
+        //this.sinopse = ConsultaChatGPT.obterTraducao(dadosSerie.sinopse().trim());
         this.sinopse = dadosSerie.sinopse();
     }
 
